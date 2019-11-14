@@ -42,6 +42,8 @@ from detectron2.utils.logger import setup_logger
 from . import hooks
 from .train_loop import SimpleTrainer
 
+from zoo.pipeline.api.net.torch_net import *
+
 __all__ = ["default_argument_parser", "default_setup", "DefaultPredictor", "DefaultTrainer"]
 
 
@@ -149,6 +151,8 @@ class DefaultPredictor:
         checkpointer = DetectionCheckpointer(self.model)
         checkpointer.load(cfg.MODEL.WEIGHTS)
 
+        # self.az_model = TorchNet.from_pytorch(self.model, )
+
         self.transform_gen = T.ResizeShortestEdge(
             [cfg.INPUT.MIN_SIZE_TEST, cfg.INPUT.MIN_SIZE_TEST], cfg.INPUT.MAX_SIZE_TEST
         )
@@ -175,6 +179,8 @@ class DefaultPredictor:
 
         inputs = {"image": image, "height": height, "width": width}
         predictions = self.model([inputs])[0]
+        print([inputs])
+        # az_output = self.az_model.forward([inputs])[0]
         return predictions
 
 
