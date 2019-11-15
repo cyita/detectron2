@@ -145,6 +145,8 @@ class DefaultPredictor:
     def __init__(self, cfg):
         self.cfg = cfg.clone()  # cfg can be modified by model
         self.model = build_model(self.cfg)
+        logger = logging.getLogger(__name__)
+        logger.info("Model:\n{}".format(self.model))
         self.model.eval()
         self.metadata = MetadataCatalog.get(cfg.DATASETS.TEST[0])
 
