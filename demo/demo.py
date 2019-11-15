@@ -71,7 +71,7 @@ if __name__ == "__main__":
     cfg = setup_cfg(args)
 
     demo = VisualizationDemo(cfg)
-    logger.info("Model:\n{}".format(demo.model))
+    logger.info("Model:\n{}".format(demo.predictor.model))
 
     if args.input:
         if len(args.input) == 1:
