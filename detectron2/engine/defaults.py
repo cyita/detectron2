@@ -171,7 +171,6 @@ class DefaultPredictor:
         Returns:
             predictions (dict): the output of the model
         """
-        logger = logging.getLogger(__name__)
         # Apply pre-processing to image.
         if self.input_format == "RGB":
             # whether the model expects BGR inputs or RGB
@@ -182,7 +181,6 @@ class DefaultPredictor:
 
         inputs = {"image": image, "height": height, "width": width}
         predictions = self.model([inputs])[0]
-        logger.info([inputs])
         # az_output = self.az_model.forward([inputs])[0]
         return predictions
 
