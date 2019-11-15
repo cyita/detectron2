@@ -153,7 +153,7 @@ class DefaultPredictor:
         checkpointer = DetectionCheckpointer(self.model)
         checkpointer.load(cfg.MODEL.WEIGHTS)
 
-        # self.az_model = TorchNet.from_pytorch(self.model, )
+        self.az_model = None
 
         self.transform_gen = T.ResizeShortestEdge(
             [cfg.INPUT.MIN_SIZE_TEST, cfg.INPUT.MIN_SIZE_TEST], cfg.INPUT.MAX_SIZE_TEST
@@ -181,7 +181,9 @@ class DefaultPredictor:
 
         inputs = {"image": image, "height": height, "width": width}
         predictions = self.model([inputs])[0]
-        # az_output = self.az_model.forward([inputs])[0]
+        if self.az_model:
+            self.az_model = TorchNet.from_pytorch(self.model, inputs)
+        az_output = self.az_model.forward([inputs])[0]
         return predictions
 
 

@@ -13,6 +13,8 @@ from detectron2.utils.logger import setup_logger
 
 from predictor import VisualizationDemo
 
+from zoo.common.nncontext import *
+
 # constants
 WINDOW_NAME = "COCO detections"
 
@@ -63,6 +65,7 @@ def get_parser():
 
 
 if __name__ == "__main__":
+    sc = init_spark_on_local(cores=4, conf={"spark.driver.memory": "14g"})
     mp.set_start_method("spawn", force=True)
     args = get_parser().parse_args()
     logger = setup_logger()
