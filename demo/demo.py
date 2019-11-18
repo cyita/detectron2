@@ -75,6 +75,7 @@ if __name__ == "__main__":
 
     demo = VisualizationDemo(cfg)
     logger.info("Model:\n{}".format(demo.predictor.model))
+    logger.info("azModel:\n{}".format(demo.predictor.az_model))
 
     if args.input:
         if len(args.input) == 1:
@@ -83,7 +84,6 @@ if __name__ == "__main__":
         for path in tqdm.tqdm(args.input, disable=not args.output):
             # use PIL, to be consistent with evaluation
             img = read_image(path, format="BGR")
-            logger.info(img)
             start_time = time.time()
             predictions, visualized_output = demo.run_on_image(img)
             logger.info(

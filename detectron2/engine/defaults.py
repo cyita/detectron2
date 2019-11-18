@@ -145,8 +145,6 @@ class DefaultPredictor:
     def __init__(self, cfg):
         self.cfg = cfg.clone()  # cfg can be modified by model
         self.model = build_model(self.cfg)
-        logger = logging.getLogger(__name__)
-        logger.info("Model:\n{}".format(self.model))
         self.model.eval()
         self.metadata = MetadataCatalog.get(cfg.DATASETS.TEST[0])
 
@@ -180,7 +178,7 @@ class DefaultPredictor:
         image = torch.as_tensor(image.astype("float32").transpose(2, 0, 1))
 
         inputs = {"image": image, "height": height, "width": width}
-        predictions = self.model([inputs])[0]
+        # predictions = self.model([inputs])[0]
         if self.az_model:
             self.az_model = TorchNet.from_pytorch(self.model, inputs)
         az_output = self.az_model.forward([inputs])[0]
