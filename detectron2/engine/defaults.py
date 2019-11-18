@@ -179,6 +179,8 @@ class DefaultPredictor:
 
         inputs = {"image": image, "height": height, "width": width}
         # predictions = self.model([inputs])[0]
+        logger = logging.getLogger(__name__)
+        logger.info("az inference .....")
         if self.az_model:
             self.az_model = TorchNet.from_pytorch(self.model, inputs)
         az_output = self.az_model.forward([inputs])[0]
