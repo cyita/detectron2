@@ -75,7 +75,6 @@ if __name__ == "__main__":
 
     demo = VisualizationDemo(cfg)
     logger.info("Model:\n{}".format(demo.predictor.model))
-    logger.info(demo.predictor.az_str)
 
     if args.input:
         if len(args.input) == 1:
