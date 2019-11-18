@@ -181,6 +181,7 @@ class DefaultPredictor:
         # predictions = self.model([inputs])[0]
         logger = logging.getLogger(__name__)
         logger.info("az inference .....")
+        logger.info(image.shape)
         if not self.az_model:
             logger.info("initialize az model .....")
             self.az_model = TorchNet.from_pytorch(self.model, inputs)
