@@ -184,7 +184,8 @@ class DefaultPredictor:
         if self.az_model:
             self.az_model = TorchNet.from_pytorch(self.model, inputs)
         az_output = self.az_model.forward([inputs])[0]
-        return predictions
+        # return predictions
+        return az_output
 
 
 class DefaultTrainer(SimpleTrainer):
