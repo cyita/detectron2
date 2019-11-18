@@ -184,8 +184,9 @@ class DefaultPredictor:
         logger.info(image.shape)
         if not self.az_model:
             logger.info("initialize az model .....")
-            self.az_model = TorchNet.from_pytorch(self.model, inputs)
-        az_output = self.az_model.forward([inputs])[0]
+            self.az_model = TorchNet.from_pytorch(self.model, [3, height, width])
+        # az_output = self.az_model.forward([inputs])[0]
+        az_output = self.az_model.forward(image)
         # return predictions
         return az_output
 
