@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import torch
+import collections
 from torch import nn
 
 from detectron2.structures import ImageList
@@ -62,6 +63,9 @@ class GeneralizedRCNN(nn.Module):
                 The :class:`Instances` object has the following keys:
                     "pred_boxes", "pred_classes", "scores", "pred_masks", "pred_keypoints"
         """
+
+        if isinstance(batched_inputs, dict):
+            batched_inputs = [batched_inputs]
         if not self.training:
             return self.inference(batched_inputs)
 
@@ -131,13 +135,18 @@ class GeneralizedRCNN(nn.Module):
             for results_per_image, input_per_image, image_size in zip(
                 results, batched_inputs, images.image_sizes
             ):
-                # height = input_per_image.get("height", image_size[0])
-                # width = input_per_image.get("width", image_size[1])
-                height = image_size[0]
-                width = image_size[1]
+                height = input_per_image.get("height", torch.tensor(image_size[0])).item()
+                width = input_per_image.get("width", torch.tensor(image_size[1])).item()
                 r = detector_postprocess(results_per_image, height, width)
-                processed_results.append({"instances": r})
-            return processed_results
+                # processed_results.append({"instances": r})
+                processed_results.append(tuple(r))
+
+            # TODO: test
+            # MyTuple = collections.namedtuple('MyTuple', sorted(processed_results[0]))
+            # t = MyTuple(**processed_results[0])
+            return_val = tuple(processed_results)
+
+            return return_val
         else:
             return results
 
@@ -145,8 +154,7 @@ class GeneralizedRCNN(nn.Module):
         """
         Normalize, pad and batch the input images.
         """
-        # images = [x["image"].to(self.device) for x in batched_inputs]
-        images = [x.to(self.device) for x in batched_inputs]
+        images = [x["image"].to(self.device) for x in batched_inputs]
         images = [self.normalizer(x) for x in images]
         images = ImageList.from_tensors(images, self.backbone.size_divisibility)
         return images

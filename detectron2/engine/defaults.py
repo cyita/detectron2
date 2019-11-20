@@ -173,7 +173,7 @@ class DefaultPredictor:
         if self.input_format == "RGB":
             # whether the model expects BGR inputs or RGB
             original_image = original_image[:, :, ::-1]
-        height, width = original_image.shape[:2]
+        height, width = [torch.tensor(x) for x in original_image.shape[:2]]
         image = self.transform_gen.get_transform(original_image).apply_image(original_image)
         image = torch.as_tensor(image.astype("float32").transpose(2, 0, 1))
 
@@ -184,7 +184,8 @@ class DefaultPredictor:
         logger.info(image.shape)
         if self.az_model is None:
             logger.info("initialize az model .....")
-            self.az_model = TorchNet.from_pytorch(self.model, [1, 3, height, width])
+            # self.az_model = TorchNet.from_pytorch(self.model, [1, 3, height, width])
+            self.az_model = TorchNet.from_pytorch(self.model, [inputs])
         # az_output = self.az_model.forward([inputs])[0]
         az_output = self.az_model.forward(image)
         # return predictions

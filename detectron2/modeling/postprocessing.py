@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from torch.nn import functional as F
+from torch import tensor
 
 from detectron2.layers import paste_masks_in_image
 from detectron2.structures import Instances
@@ -49,7 +50,27 @@ def detector_postprocess(results, output_height, output_width, mask_threshold=0.
         results.pred_keypoints[:, :, 0] *= scale_x
         results.pred_keypoints[:, :, 1] *= scale_y
 
-    return results
+    # result_dict = {}
+    height, width = results.image_size
+    # result_dict["num_instances"] = tensor(len(results))
+    # result_dict["image_height"] = tensor(height)
+    # result_dict["image_width"] = tensor(width)
+    # for (trg_name, trg_value) in results.get_fields().items():
+    #     if trg_name == "pred_boxes":
+    #         result_dict[trg_name] = trg_value.tensor
+    #     else:
+    #         result_dict[trg_name] = trg_value
+    result_list = []
+    result_list.append(tensor(len(results)))
+    result_list.append(tensor(height))
+    result_list.append(tensor(width))
+    for (trg_name, trg_value) in results.get_fields().items():
+        if trg_name == "pred_boxes":
+            result_list.append(trg_value.tensor)
+        else:
+            result_list.append(trg_value)
+
+    return result_list
 
 
 def sem_seg_postprocess(result, img_size, output_height, output_width):
