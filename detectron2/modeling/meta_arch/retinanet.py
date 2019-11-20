@@ -116,6 +116,8 @@ class RetinaNet(nn.Module):
             dict[str: Tensor]:
                 mapping from a named loss to a tensor storing the loss. Used during training only.
         """
+        if isinstance(batched_inputs, dict):
+            batched_inputs = [batched_inputs]
         images = self.preprocess_image(batched_inputs)
         if "instances" in batched_inputs[0]:
             gt_instances = [x["instances"].to(self.device) for x in batched_inputs]
@@ -144,8 +146,12 @@ class RetinaNet(nn.Module):
                 height = input_per_image.get("height", image_size[0])
                 width = input_per_image.get("width", image_size[1])
                 r = detector_postprocess(results_per_image, height, width)
-                processed_results.append({"instances": r})
-            return processed_results
+                # processed_results.append({"instances": r})
+                processed_results.append(tuple(r))
+
+            # TODO
+            return_val = tuple(processed_results)
+            return return_val
 
     def losses(self, gt_classes, gt_anchors_deltas, pred_class_logits, pred_anchor_deltas):
         """

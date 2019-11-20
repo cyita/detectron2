@@ -3,7 +3,7 @@ from torch.nn import functional as F
 from torch import tensor
 
 from detectron2.layers import paste_masks_in_image
-from detectron2.structures import Instances
+from detectron2.structures import Instances, Boxes
 
 
 def detector_postprocess(results, output_height, output_width, mask_threshold=0.5):
@@ -65,7 +65,7 @@ def detector_postprocess(results, output_height, output_width, mask_threshold=0.
     result_list.append(tensor(height))
     result_list.append(tensor(width))
     for (trg_name, trg_value) in results.get_fields().items():
-        if trg_name == "pred_boxes":
+        if isinstance(trg_value, Boxes):
             result_list.append(trg_value.tensor)
         else:
             result_list.append(trg_value)

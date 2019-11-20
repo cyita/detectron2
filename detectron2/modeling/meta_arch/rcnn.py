@@ -184,6 +184,8 @@ class ProposalNetwork(nn.Module):
                 The dict contains one key "proposals" whose value is a
                 :class:`Instances` with keys "proposal_boxes" and "objectness_logits".
         """
+        if isinstance(batched_inputs, dict):
+            batched_inputs = [batched_inputs]
         images = [x["image"].to(self.device) for x in batched_inputs]
         images = [self.normalizer(x) for x in images]
         images = ImageList.from_tensors(images, self.backbone.size_divisibility)
@@ -211,5 +213,8 @@ class ProposalNetwork(nn.Module):
             height = input_per_image.get("height", image_size[0])
             width = input_per_image.get("width", image_size[1])
             r = detector_postprocess(results_per_image, height, width)
-            processed_results.append({"proposals": r})
-        return processed_results
+            # processed_results.append({"proposals": r})
+            processed_results.append(tuple(r))
+
+        result_val = tuple(processed_results)
+        return result_val
